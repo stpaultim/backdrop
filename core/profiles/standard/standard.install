@@ -195,25 +195,11 @@ function standard_install() {
     ->set('node_post_pattern', 'posts/[node:title]')
     ->save();
 
-    // Create an "About" page node.
+  // Create an "About" page node.
   $page = new Node(
     array(
       'title' => st('Home page content'),
-      'body' => array(
-        LANGUAGE_NONE => array(
-          array(
-            'value' => st('
-            <p>A great place to start configuring your new site is with your home page layout.</p>
-            <ul>
-              <li>You can <a href="node/1/edit">edit this message</a> by looking for the "Home page content" listed under the Content menu.
-              </li>
-              <li>You can add or remove blocks on this page layout at <a href="admin/structure/layouts">admin/structure/layouts</a>.
-              </li>
-            </ul>'),
-            'format' => 'filtered_html',
-          ),
-        ),
-      ),
+      'body' => array(),
       'uid' => 1,
       'status' => 1,
       'promote' => 0,
@@ -221,24 +207,48 @@ function standard_install() {
     )
   );
   $page->save();
+  // Now that we have the node ID, add the body text, and re-save the node.
+  $page_nid = $page->nid;
+  $link_path = "node/$page_nid/edit";
+  $page->body = array(
+    LANGUAGE_NONE => array(
+      array(
+        'value' => st('
+        <p>A great place to start configuring your new site is with your home page layout.</p>
+        <ul>
+          <li>You can <a href="@link">edit this message</a> by looking for the "Home page content" listed under the Content menu.
+          </li>
+          <li>You can add or remove blocks on this page layout at <a href="admin/structure/layouts">admin/structure/layouts</a>.
+          </li>
+        </ul>', array('@link' => $link_path)),
+        'format' => 'filtered_html',
+      ),
+    ),
+  );
+  $page->save();
 
   // Create an initial post to welcome users on install.
   $post = new Node(
     array(
       'title' => st('Your first post!'),
-      'body' => array(
-        LANGUAGE_NONE => array(
-          array(
-            'value' => st('This is your first post! You may <a href="node/2/edit">edit or delete it</a>.'),
-            'format' => 'filtered_html',
-          ),
-        ),
-      ),
+      'body' => array(),
       'uid' => 1,
       'status' => 1,
       'promote' => 1,
       'type' => 'post',
     )
+  );
+  $post->save();
+  // Now that we have the node ID, add the body text, and re-save the node.
+  $post_nid = $post->nid;
+  $link_path = "node/$page_nid/edit";
+  $post->body = array(
+    LANGUAGE_NONE => array(
+      array(
+        'value' => st('This is your first post! You may <a href="@link">edit or delete it</a>.', array('@link' => $link_path)),
+        'format' => 'filtered_html',
+      ),
+    ),
   );
   $post->save();
 
