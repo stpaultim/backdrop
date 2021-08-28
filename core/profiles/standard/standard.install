@@ -208,8 +208,7 @@ function standard_install() {
   );
   $page->save();
   // Now that we have the node ID, add the body text, and re-save the node.
-  $page_nid = $page->nid;
-  $link_path = "node/$page_nid/edit";
+  $link_path = "node/$page->nid/edit";
   $page->body = array(
     LANGUAGE_NONE => array(
       array(
@@ -240,8 +239,7 @@ function standard_install() {
   );
   $post->save();
   // Now that we have the node ID, add the body text, and re-save the node.
-  $post_nid = $post->nid;
-  $link_path = "node/$page_nid/edit";
+  $link_path = "node/$post->nid/edit";
   $post->body = array(
     LANGUAGE_NONE => array(
       array(
