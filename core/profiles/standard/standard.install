@@ -380,8 +380,7 @@ function standard_install() {
 
   // Creating First Card
 
-
-  $image_url = BACKDROP_ROOT . '/' . backdrop_get_path('profile', 'standard') . '/' . 'images/library_cards.jpg'; 
+  $image_url = $base_url . '/core/profiles/standard/images/library_cards.jpg';
   
   $new_file = system_retrieve_file($image_url, $image_dir, TRUE);
   watchdog('tim3', $image_url);
@@ -421,7 +420,7 @@ function standard_install() {
 
   // Creating Second Card
 
-  $image_url = $base_secure_url . '/core/profiles/standard/images/playing_cards.jpg';
+  $image_url = $base_url . '/core/profiles/standard/images/playing_cards.jpg';
   $new_file = system_retrieve_file($image_url, $image_dir, TRUE);
 
   $card = new Node(
@@ -458,7 +457,7 @@ function standard_install() {
 
   // Creating Third Card
 
-  $image_url = $base_secure_url . '/core/profiles/standard/images/buffalo_front_page.jpg';
+  $image_url = $base_url . '/core/profiles/standard/images/buffalo_front_page.jpg';
   $new_file = system_retrieve_file($image_url, $image_dir, TRUE);
 
   $card = new Node(
@@ -656,9 +655,4 @@ function standard_install() {
   config_set('system.core', 'preprocess_css', '1');
   config_set('system.core', 'preprocess_js', '1');
   config_set('system.core', 'cache', '1');
-
-
-  $image_url = $base_secure_url . '/core/profiles/standard/images/drop_paw.png';
-  system_retrieve_file($image_url, 'public://', TRUE);
-  config_set('system.core', 'site_logo_path', 'public://drop_paw.png');
 }
