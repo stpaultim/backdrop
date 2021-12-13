@@ -33,4 +33,3 @@ dependencies[] = file
 dependencies[] = update
 dependencies[] = views
 dependencies[] = views_ui
-dependencies[] = devel
