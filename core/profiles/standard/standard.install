@@ -393,7 +393,7 @@ function standard_install() {
         LANGUAGE_NONE => array(
           array(
             'value' => st('
-              <p>Backdrop CMS includes 3 pre-defined types of content: Pages, Posts, and Cards. Any number of custom content types can also be added.</p>'
+              <p>Backdrop CMS includes 3 pre-defined types of content: Pages, Posts, and Cards. Any number of custom <a href="https://backdropcms.org/user-guide/content-types">content types</a> can also be added.</p>'
             ),
             'format' => 'filtered_html',
           ),
@@ -467,7 +467,7 @@ function standard_install() {
         LANGUAGE_NONE => array(
           array(
             'value' => st('
-              <p>This home page was built using a layout. Blocks can be added or removed from this layout to determine what appears here. This Card was added to the Home Page layout through a view that was placed as a block.</p>'
+              <p>This home page was built using a <a href="https://backdropcms.org/user-guide/deep-dive-advanced-layout-options">layout</a>. <a href="https://backdropcms.org/user-guide/blocks">Blocks</a> can be added or removed from this layout to determine what appears here. This Card was added to the Home Page layout through <a href="https://backdropcms.org/user-guide/views">a view</a> that was placed here as a block.</p>'
             ),
             'format' => 'filtered_html',
           ),
@@ -499,7 +499,7 @@ function standard_install() {
       'body' => array(
         LANGUAGE_NONE => array(
           array(
-            'value' => st('<p>This is your first post! This post has been promoted to the front page and is displayed as part of the Promoted content view. You may edit or delete this or any of the sample pieces of content.</p>'),
+            'value' => st('<p>This is your first post! This post has been promoted to the front page and is displayed as part of the Promoted content view (<em>/admin/structure/views/view/promoted</em>). You may edit or delete this or any of the sample pieces of content on the content page (<em>admin/content</em>).</p><p>Please visit our <a href="https://backdropcms.org/user-guide">Backdrop User Guide</a> to help you get started.</p>'),
             'format' => 'filtered_html'
           ),
         ),
