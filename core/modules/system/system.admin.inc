@@ -115,8 +115,9 @@ function system_themes_page() {
   // Inform the user if theme_debug is enabled.
   system_theme_debug_enabled_warning();
 
-  // Get current list of themes.
+  // Get current list of themes and modules.
   $themes = system_rebuild_theme_data();
+  $modules = system_rebuild_module_data();
   uasort($themes, 'system_sort_modules_by_info_name');
 
   $theme_default = config_get('system.core', 'theme_default');
@@ -169,6 +170,21 @@ function system_themes_page() {
     else {
       $theme_keys = array($theme->name);
     }
+
+    // Check for missing module dependencies.
+    if (!empty($theme->requires)) {
+      $theme->missing_modules = array();
+      foreach ($theme->requires as $dep_name => $dep_info) {
+        if (!isset($modules[$dep_name])) {
+          $theme->missing_modules[] = $dep_name;
+          $broken_dependencies[$theme->name][] = $dep_name;
+        }
+      }
+      if (empty($theme->missing_modules)) {
+        unset($theme->missing_modules);
+      }
+    }
+
     // Look for a screenshot in the current theme or in its closest ancestor.
     foreach (array_reverse($theme_keys) as $theme_key) {
       if (isset($themes[$theme_key]) && file_exists($themes[$theme_key]->info['screenshot'])) {
@@ -611,8 +627,9 @@ function system_modules($form, $form_state = array()) {
     ),
   );
 
-  // Get current list of modules.
+  // Get current list of modules and themes.
   $files = system_rebuild_module_data();
+  $theme_data = system_rebuild_theme_data();
 
   $visible_files = $files;
   foreach ($visible_files as $filename => $file) {
@@ -735,6 +752,19 @@ function system_modules($form, $form_state = array()) {
         }
         else {
           $extra['required_by'][] = t('@module (<span class="admin-disabled">disabled</span>)', array('@module' => $files[$required_by]->info['name']));
+        }
+      }
+    }
+
+    // Check if any themes require this module.
+    foreach ($theme_data as $theme_name => $theme) {
+      if (!empty($theme->requires) && array_key_exists($filename, $theme->requires)) {
+        if ($theme->status) {
+          $extra['required_by'][] = t('@theme theme (<span class="admin-enabled">enabled</span>)', array('@theme' => $theme->info['name']));
+          $extra['disabled'] = TRUE;
+        }
+        else {
+          $extra['required_by'][] = t('@theme theme (<span class="admin-disabled">disabled</span>)', array('@theme' => $theme->info['name']));
         }
       }
     }

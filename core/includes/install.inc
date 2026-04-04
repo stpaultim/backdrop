@@ -1075,6 +1075,14 @@ function backdrop_uninstall_modules($module_list = array(), $uninstall_dependent
           return FALSE;
         }
       }
+
+      // Check if any enabled themes depend on this module.
+      $theme_data = system_rebuild_theme_data();
+      foreach ($theme_data as $theme_name => $theme) {
+        if ($theme->status && isset($theme->requires[$module])) {
+          return FALSE;
+        }
+      }
     }
 
     // Sort the module list by pre-calculated weights.

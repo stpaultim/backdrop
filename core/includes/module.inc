@@ -599,6 +599,22 @@ function module_disable($module_list, $disable_dependents = TRUE) {
     // Sort the module list by pre-calculated weights.
     asort($module_list);
     $module_list = array_keys($module_list);
+
+    // Check if any enabled themes depend on modules being disabled.
+    $theme_data = system_rebuild_theme_data();
+    foreach ($module_list as $key => $module) {
+      foreach ($theme_data as $theme_name => $theme) {
+        if ($theme->status && isset($theme->requires[$module])) {
+          backdrop_set_message(t('The %module module cannot be disabled because the enabled %theme theme depends on it.', array(
+            '%module' => $module_data[$module]->info['name'],
+            '%theme' => $theme->info['name'],
+          )), 'error');
+          unset($module_list[$key]);
+          break;
+        }
+      }
+    }
+    $module_list = array_values($module_list);
   }
 
   // Refresh Entity info static cache.

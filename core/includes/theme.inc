@@ -1660,6 +1660,39 @@ function _theme_render_template_debug($template_function, $template_file, $varia
  *   An array of theme names.
  */
 function theme_enable($theme_list) {
+  // Check theme dependencies against available modules.
+  $theme_data = system_rebuild_theme_data();
+  $module_data = system_rebuild_module_data();
+
+  $modules_to_enable = array();
+  foreach ($theme_list as $key => $theme) {
+    if (isset($theme_data[$theme]) && !empty($theme_data[$theme]->requires)) {
+      foreach ($theme_data[$theme]->requires as $dep_name => $dep_info) {
+        if (!isset($module_data[$dep_name])) {
+          // Required module not found in the filesystem.
+          backdrop_set_message(t('The %theme theme requires the %module module, which could not be found.', array(
+            '%theme' => $theme_data[$theme]->info['name'],
+            '%module' => $dep_name,
+          )), 'error');
+          unset($theme_list[$key]);
+          continue 2;
+        }
+        if (!$module_data[$dep_name]->status) {
+          $modules_to_enable[$dep_name] = $dep_name;
+        }
+      }
+    }
+  }
+
+  if (empty($theme_list)) {
+    return;
+  }
+
+  // Enable required modules first.
+  if (!empty($modules_to_enable)) {
+    module_enable(array_values($modules_to_enable));
+  }
+
   backdrop_clear_css_cache();
 
   foreach ($theme_list as $theme) {

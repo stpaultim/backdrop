@@ -121,6 +121,27 @@ function theme_system_themes_page($variables) {
         }
       }
 
+      // Show module dependencies.
+      if (!empty($theme->info['dependencies'])) {
+        $dep_labels = array();
+        foreach ($theme->info['dependencies'] as $dependency) {
+          $dep_data = backdrop_parse_dependency($dependency);
+          $dep_label = check_plain($dep_data['name']);
+          if (isset($theme->missing_modules) && in_array($dep_data['name'], $theme->missing_modules)) {
+            $dep_label .= ' <em>(' . t('missing') . ')</em>';
+          }
+          $dep_labels[] = $dep_label;
+        }
+        $depends .= '<br><strong>' . t('Requires') . ':</strong> ' . implode(', ', $dep_labels);
+        if (isset($theme->missing_modules)) {
+          $theme->classes[] = 'missing-dependency';
+          $icon = icon('warning', array(
+            'attributes' => array('width' => 24, 'height' => 24),
+          ));
+          $prefix = '<div class="missing-warning">' . $icon . ' ' . t('Missing dependency') . '</div>';
+        }
+      }
+
       // Style theme info
       $notes = count($theme->notes) ? ' (' . join(', ', $theme->notes) . ')' : '';
       $theme->classes[] = 'theme-selector';

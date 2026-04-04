@@ -3230,6 +3230,7 @@ function _system_rebuild_theme_data() {
 
   // Set defaults for theme info.
   $defaults = array(
+    'dependencies' => array(),
     'engine' => 'phptemplate',
     'description' => '',
     'screenshot' => 'screenshot.png',
@@ -3333,6 +3334,21 @@ function system_rebuild_theme_data() {
   ksort($themes);
   system_get_files_database($themes, 'theme');
   system_update_files_database($themes, 'theme');
+
+  // Build theme dependency info against modules.
+  $modules = system_rebuild_module_data();
+  foreach ($themes as $key => $theme) {
+    $themes[$key]->requires = array();
+    $themes[$key]->required_by = isset($themes[$key]->required_by) ? $themes[$key]->required_by : array();
+    if (!empty($theme->info['dependencies'])) {
+      foreach ($theme->info['dependencies'] as $dependency) {
+        $dependency_data = backdrop_parse_dependency($dependency);
+        $dep_name = $dependency_data['name'];
+        $themes[$key]->requires[$dep_name] = $dependency_data;
+      }
+    }
+  }
+
   return $themes;
 }
 
